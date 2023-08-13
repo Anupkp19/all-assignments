@@ -46,4 +46,60 @@ const app = express();
 
 app.use(bodyParser.json());
 
+let todos=[{title: "Daily chores", description: "Go and buy Milk", id:0}]
+
+app.get('/todos', (req, res) => {
+  res.json(todos);
+
+});
+app.get("/todos/:id", (req,res) =>{
+  let id = req.params.id;
+  const find_id = todos.find(todo=> todo.id === parseInt(id))
+  if(find_id){
+    res.json(find_id)
+  }else{
+    res.status(404).json({message: "Todo not found"});
+  }
+});
+
+app.post('/todos', (req, res) => {
+let vars = req.body;
+let newTodo = {
+  title: vars.title,
+  description: vars.description,
+  id: todos.length + 1
+}
+todos.push(newTodo)
+
+});
+app.put("/todos/:id", (req,res) => {
+let vars = req.body;
+let id = req.params.id;
+const find_id = todos.find(todo=> todo.id === parseInt(id))
+if(find_id){  
+todos[find_id].title = vars.title
+todos[find_id].description = vars.description
+res.json(todos[find_id])
+}
+else{
+  res.status(404).json({message: "Todo not found"});
+}
+})
+
+app.delete("/todos/:id", (req,res) => {
+let name =req.body
+let id = req.params.id;
+const find_id = todos.find(todo=> todo.id === parseInt(id))
+
+if(find_id){
+  todos.splice(find_id,1);
+}else{
+  res.status(400).json({message:"id does not exist"})
+}
+
+})
+app.use(req,res,next => {
+  res.status(404).json("Route does not exist");
+})
+
 module.exports = app;
