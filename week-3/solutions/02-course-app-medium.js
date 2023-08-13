@@ -15,8 +15,8 @@ const generateJwt = (user) => {
   return jwt.sign(payload, secretKey, { expiresIn: '1h' });
 };
 
-const authenticateJwt = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+const authenticateJwt = (req, res, next) => 
+ authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];

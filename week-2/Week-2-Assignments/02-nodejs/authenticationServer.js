@@ -34,4 +34,71 @@ const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
 
+let users = [];
+app.use(express.json());
+
+app.get("/signup", (req, res) => {
+var name = req.body;
+var userexists=false
+
+for(var i=0; i<users.length; i++) {
+if(users[i].username == name.username ) {
+userexists = true;
+break;
+}
+}
+if(userexists) {
+res.status(400).send("Username already exists");
+}
+else{
+  users.push(name);
+  res.status(201).send("User created successfully")
+}
+})
+
+app.post("/login", (req, res) => {
+var name = req.body;
+let userexists=null;
+for(var i=0; i<users.length; i++) {
+  if(users[i].username == name.username && users[i].password == name.password) {
+    userexists = users[i];
+    break;
+  }
+}
+if(userexists){
+res.status(201).json({ username:userexists.username, password:userexists.password, email:userexists.email}); 
+
+}else{
+  res.status(401).send("Invalid credentials")
+}
+})
+
+app.get("/data", (req, res) => {
+var name = req.body;
+var userexists=false
+for(var i=0; i<users.length; i++) {
+if(users[i].username == name.username && users[i].password == name.password) {
+    userexists=true;
+    break;
+  }
+}
+let usersdata=[]
+if(userexists){
+  for(var i=0; i<users.length; i++) {
+    usersdata.push({
+      firstname: users[i].firstname,
+      lastname: users[i].lastname,
+      email: users[i].email,
+      id: i+1
+    })
+  }
+  res.status(200).json(usersdata)
+}else{
+  res.status(402).json({message: "Invalid username or password"})
+}
+
+})
+
+
+
 module.exports = app;
